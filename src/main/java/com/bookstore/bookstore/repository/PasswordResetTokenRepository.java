@@ -17,7 +17,7 @@ public interface PasswordResetTokenRepository extends JpaRepository<PasswordRese
 
     Stream<PasswordResetToken> findAllByExpiryTimeLessThan(Date now);
 
-    @Modifying
+   /* @Modifying
     @Query("DELETE FROM PasswordResetToken t WHERE t.expiryTime <= ? 1")
-    void deleteAllExpiredSince(Date now);
+    void deleteAllExpiredSince(Date now);*/
 }
