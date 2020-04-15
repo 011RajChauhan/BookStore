@@ -1,14 +1,22 @@
-package com.bookstore.bookstore.entities;
+package com.bookstore.bookstore.domain;
 
+import com.bookstore.bookstore.domain.security.Authority;
+import com.bookstore.bookstore.domain.security.UserRole;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
-public class User {
+public class User implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -23,6 +31,10 @@ public class User {
     private String email;
     private String contact_number;
     private boolean enabled = true;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JsonIgnore
+    private Set<UserRole> userRoles = new HashSet<>();
 
     @CreationTimestamp
     private LocalDateTime createdOn;
@@ -46,8 +58,32 @@ public class User {
         return username;
     }
 
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+
+
     public void setUsername(String username) {
         this.username = username;
+    }
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        Set<GrantedAuthority> authorities = new HashSet<>();
+        userRoles.forEach(ur-> authorities.add(new Authority(ur.getRole().getName())));
+        return authorities;
     }
 
     public String getPassword() {
@@ -90,6 +126,7 @@ public class User {
         this.contact_number = contact_number;
     }
 
+    @Override
     public boolean isEnabled() {
         return enabled;
     }
@@ -166,5 +203,13 @@ public class User {
                 .append("createdOn", createdOn)
                 .append("updatedOn", updatedOn)
                 .toString();
+    }
+
+    public Set<UserRole> getUserRoles() {
+        return userRoles;
+    }
+
+    public void setUserRoles(Set<UserRole> userRoles) {
+        this.userRoles = userRoles;
     }
 }
