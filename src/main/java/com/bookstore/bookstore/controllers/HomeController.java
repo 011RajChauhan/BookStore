@@ -13,14 +13,21 @@ public class HomeController {
         return "index";
     }
 
-    @GetMapping("/myAccount")
-    public String myAccount(){
+    @GetMapping("/login")
+    public String login(Model model) {
+        model.addAttribute("loginFormAndTabActive", true);
         return "myAccount";
     }
 
-    @GetMapping("/login")
-    public String login(Model model) {
-        model.addAttribute("classActiveLogin", true);
+    @GetMapping("/registerNewUser")
+    public String register(Model model) {
+        model.addAttribute("newUserFormAndTabActive", true);
+        return "myAccount";
+    }
+
+    @GetMapping("/forgotPassword")
+    public String forgotPassword(Model model) {
+        model.addAttribute("forgotPasswordFormAndTabActive", true);
         return "myAccount";
     }
 }
