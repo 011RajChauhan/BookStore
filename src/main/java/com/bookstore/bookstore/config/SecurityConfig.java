@@ -18,8 +18,6 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
-    @Autowired
-    private Environment env;
 
     @Autowired
     private UserSecurityService userSecurityService;
@@ -29,15 +27,15 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     private static final String[] PUBLIC_MATCHERS = {
-            "/",
-            "/login",
+            "/bookShelf",
             "/registerNewUser",
             "/forgotPassword",
+            "/login",
             "/css/**",
             "/js/**",
             "/image/**",
-            "/fonts/**"
-
+            "/fonts/**",
+            "/"
     };
 
     @Override

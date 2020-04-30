@@ -12,6 +12,7 @@ public class SecurityUtility {
 
         private static final String SALT = "salt";
 
+        /*this bean is not used anywhere*/
         @Bean
         public static BCryptPasswordEncoder passwordEncoder() {
             return new BCryptPasswordEncoder(12,new SecureRandom(SALT.getBytes()));
@@ -21,8 +22,8 @@ public class SecurityUtility {
     public static String randomPassword() {
             String SALTCHARS = "ABCDEFGHIJKLMNOPQUSTUVWXYZ1234567890";
             StringBuilder salt = new StringBuilder();
+            /*gives a random value from 0.1 - 0.9*/
             Random random = new Random();
-
             while (salt.length() < 18) {
                 int index = (int)(random.nextFloat()*SALTCHARS.length());
                 salt.append(SALTCHARS.charAt(index));

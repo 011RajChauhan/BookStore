@@ -16,11 +16,11 @@ public class MailConstructor {
 
     public SimpleMailMessage constructResetPasswordEmail(
             String contextPath,
-            Locale locale,
             String token,
-            User user,
-            String password) {
+            User user) {
 
+        System.out.println("contextPath is -->");
+        System.out.println(contextPath);
         String url = contextPath + "/registerNewUser?token=" + token;
         String message =
                 "\nPlease Click on this link to verify your email.";

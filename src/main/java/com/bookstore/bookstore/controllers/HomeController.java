@@ -56,7 +56,7 @@ public class HomeController {
     }
 
     @GetMapping("/registerNewUser")
-    public String register(Model model, Locale locale, @RequestParam("token") String token) {
+    public String register(Model model, @RequestParam("token") String token) {
         PasswordResetToken passwordResetToken = userService.getPasswordResetToken(token);
         if (passwordResetToken == null) {
             model.addAttribute("message", "Invalid Token");
@@ -75,7 +75,8 @@ public class HomeController {
         );
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
-        model.addAttribute("newUserFormAndTabActive", true);
+        model.addAttribute("userEditProfileTabAndFormActive", true);
+        model.addAttribute("user", user);
         return "myProfile";
     }
 
@@ -84,7 +85,7 @@ public class HomeController {
                                   Model model,
                                   @ModelAttribute("email") String email,
                                   @ModelAttribute("username") String username) throws Exception {
-        model.addAttribute("loginFormAndTabActive", true);
+        model.addAttribute("createAccountTabAndFormActive", true);
         model.addAttribute("email", email);
         model.addAttribute("username", username);
 
@@ -123,17 +124,43 @@ public class HomeController {
                         request.getServerPort() +
                         request.getContextPath();
 
-        SimpleMailMessage passwordResetMail = mailConstructor.constructResetPasswordEmail(appUrl, request.getLocale(),
-                token, user, password);
+        SimpleMailMessage passwordResetMail = mailConstructor.constructResetPasswordEmail(appUrl, token, user);
         mailSender.send(passwordResetMail);
 
         model.addAttribute("emailSent", true);
         return "myAccount";
     }
 
-    @GetMapping("/forgotPassword")
-    public String forgotPassword(Model model) {
+    @PostMapping("/forgotPassword")
+    public String forgotPassword(Model model, @RequestParam("email") String email, HttpServletRequest request) {
         model.addAttribute("forgotPasswordFormAndTabActive", true);
+        User user = userService.findByEmail(email);
+        if (user == null) {
+            model.addAttribute("invalidEmail", true);
+            return "myAccount";
+        }
+
+        String password = SecurityUtility.randomPassword();
+        String encryptedPassword = SecurityUtility.passwordEncoder().encode(password);
+        user.setPassword(encryptedPassword);
+
+
+        userService.save(user);
+
+        String token = UUID.randomUUID().toString();
+        userService.createPasswordResetTokenForUser(user, token);
+
+        String appUrl =
+                "http://" +
+                        request.getServerName() +
+                        ":" +
+                        request.getServerPort() +
+                        request.getContextPath();
+
+        SimpleMailMessage passwordResetMail = mailConstructor.constructResetPasswordEmail(appUrl, token, user);
+        mailSender.send(passwordResetMail);
+
+        model.addAttribute("emailSent", true);
         return "myAccount";
     }
 }

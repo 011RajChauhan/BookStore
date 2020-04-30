@@ -2,11 +2,14 @@ package com.bookstore.bookstore.service.impl;
 
 import com.bookstore.bookstore.domain.User;
 import com.bookstore.bookstore.domain.security.PasswordResetToken;
+import com.bookstore.bookstore.domain.security.Role;
 import com.bookstore.bookstore.domain.security.UserRole;
 import com.bookstore.bookstore.repository.PasswordResetTokenRepository;
 import com.bookstore.bookstore.repository.RoleRepository;
 import com.bookstore.bookstore.repository.UserRepository;
 import com.bookstore.bookstore.service.UserService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,6 +17,8 @@ import java.util.Set;
 
 @Service
 public class UserServiceImpl implements UserService {
+
+    private Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
     private PasswordResetTokenRepository passwordResetTokenRepository;
@@ -46,10 +51,10 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User createUser(User user, Set<UserRole> userRoles) throws Exception {
+    public User createUser(User user, Set<UserRole> userRoles)  {
        User newUser =  userRepository.findByUsername(user.getUsername());
        if(newUser!=null){
-           throw new Exception("User Already Exists, nothing will be done.");
+           logger.info("user {} already exists, nothing can be done.",newUser);
        }else{
            for(UserRole ur: userRoles) {
                roleRepository.save(ur.getRole());
@@ -58,5 +63,10 @@ public class UserServiceImpl implements UserService {
            newUser = userRepository.save(user);
        }
        return newUser;
+    }
+
+    @Override
+    public void save(User user) {
+        userRepository.save(user);
     }
 }

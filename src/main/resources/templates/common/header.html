@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml" xmlns:sec="http://www.w3.org/1999/xhtml">
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml"  xmlns:sec="http://www.w3.org/1999/xhtml">
 <head th:fragment="common-header">
     <meta charset="utf-8"/>
     <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
@@ -30,7 +30,7 @@
                            data-toggle="dropdown" role="button" aria-haspopup="true"
                            aria-expanded="false">Books <span class="caret"></span></a>
                         <ul class="dropdown-menu">
-                            <li><a href="#">Browse the bookshelf</a></li>
+                            <li><a th:href="@{/bookShelf}">Browse the bookshelf</a></li>
                             <li><a href="#">Store hours &#38; Directions</a></li>
                             <li><a href="#">FAQ</a></li>
                         </ul>
