@@ -8,4 +8,6 @@ import java.util.List;
 public interface BookService {
 
     public List<Book> findAll();
+
+    public Book findBookById(Long id);
 }
